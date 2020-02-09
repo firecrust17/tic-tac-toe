@@ -1,8 +1,12 @@
-New
-<input type="text" name="game_id" [(ngModel)]="new">
-<button (click)="start(new)">Start</button>{{new}}
+Create New Game
+<br>
+<input type="text" name="game_id" placeholder="Enter game name.." [(ngModel)]="new">
+<button (click)="start(new)">Start</button>
+
 <br>
 <br>
-Join
-<input type="text" name="game_id" [(ngModel)]="join">
-<button (click)="start(join)">Start</button>{{join}}
+
+Join Existing Game
+<br>
+<input type="text" name="game_id" placeholder="Enter game name.." [(ngModel)]="join">
+<button (click)="start(join)">Start</button>
