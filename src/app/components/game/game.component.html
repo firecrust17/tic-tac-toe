@@ -1,0 +1,27 @@
+<h1>Hello user {{user_no}}</h1>
+
+<div *ngIf="user_no != 1 && user_no != 2">
+	<h2>2 users already playing.. You can only watch the game.</h2><hr>
+</div>
+
+<div *ngIf="!game_over">
+	<h3 *ngIf="user_one_turn">User 1's turn</h3>
+	<h3 *ngIf="!user_one_turn">User 2's turn</h3>
+	<hr>
+</div>
+
+<!-- game here -->
+<table *ngIf="!game_over">
+	<tr *ngFor="let row of game; let i=index;">
+		<td *ngFor="let col of row; let j=index;" style="border: 1px solid black; width: 20px; height: 20px;" (click)="cell_clicked(i,j)">
+			<span *ngIf="col == 0"> </span>
+			<span *ngIf="col == 1">X</span>
+			<span *ngIf="col == 2">O</span>
+		</td>
+	</tr>
+</table>
+
+<div *ngIf="game_over">
+	<h3>{{winner_text}}</h3>
+	<button *ngIf="user_no < 3" (click)="reset_game()">Restart</button>
+</div>
