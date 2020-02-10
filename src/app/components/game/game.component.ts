@@ -3,6 +3,8 @@ import { SocketService } from '../../services/socket.service';
 import { EnvService } from '../../services/env.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
+declare var $: any;
+
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
@@ -18,6 +20,17 @@ export class GameComponent implements OnInit, OnDestroy {
 	winner = 0;
 	game_over = false;
 	winner_text = '';
+	total_users = 0;
+	win_map = [
+		[[0,0], [0,1], [0,2]],
+		[[1,0], [1,1], [1,2]],
+		[[2,0], [2,1], [2,2]],
+		[[0,0], [1,0], [2,0]],
+		[[0,1], [1,1], [2,1]],
+		[[0,2], [1,2], [2,2]],
+		[[0,0], [1,1], [2,2]],
+		[[0,2], [1,1], [2,0]],
+	];
 
 	game = [[0,0,0],[0,0,0],[0,0,0]];
 
@@ -38,7 +51,7 @@ export class GameComponent implements OnInit, OnDestroy {
   ngOnInit() {
   	
     this.socket.get_data_all().subscribe(res => {
-      console.log(res);
+      // console.log(res);
       this.process_response(res);
     });
 
@@ -47,7 +60,8 @@ export class GameComponent implements OnInit, OnDestroy {
   process_response(res) {
     switch(res.event_type) {
       case 'join_room':
-        console.log(res.count + " users connected to this room");
+      	this.total_users = res.count;
+        // console.log(res.count + " users connected to this room");
         if(!this.user_no){
         	this.user_no = res.count;
         }
@@ -70,7 +84,14 @@ export class GameComponent implements OnInit, OnDestroy {
       break;
       case 'game_over':
       	// console.log(data.winner_text);
-      	this.winner_text = data.winner_text;
+      	if(this.user_no < 3 && data.winner != this.user_no){
+      		this.winner_text = 'You Lose :(';
+      	} else if (this.user_no < 3 && data.winner == this.user_no) {
+      		this.winner_text = 'You Win!! :D';
+      	} else {
+      		this.winner_text = data.winner_text;
+      	}
+      	this.add_highlight(data.win_map_index);
       	this.game_over = true;
       break;
       case 'restart':
@@ -79,12 +100,16 @@ export class GameComponent implements OnInit, OnDestroy {
       	this.game = [[0,0,0],[0,0,0],[0,0,0]];
 		  	this.user_one_starts = !this.user_one_starts;
 		  	this.user_one_turn = this.user_one_starts;
+		  	this.remove_highlight();
       break;
 
     }
   }
 
   cell_clicked(row, col) {
+  	if(this.game_over) {
+  		return false;
+  	}
   	if(this.user_no == 1 || this.user_no == 2){
   		if(this.game[row][col] == 0){
 
@@ -104,29 +129,37 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   check_if_game_over() {
-  	var win_map = [
-  		[[0,0], [0,1], [0,2]],
-  		[[1,0], [1,1], [1,2]],
-  		[[2,0], [2,1], [2,2]],
-  		[[0,0], [1,0], [2,0]],
-  		[[0,1], [1,1], [2,1]],
-  		[[0,2], [1,2], [2,2]],
-  		[[0,0], [1,1], [2,2]],
-  		[[0,0], [1,1], [2,0]],
-  	];
+  	var win_map = this.win_map;
   	for(var i=0; i<win_map.length; i++) {
   		if((this.game[win_map[i][0][0]][win_map[i][0][1]] == this.game[win_map[i][1][0]][win_map[i][1][1]]) && 
   			(this.game[win_map[i][1][0]][win_map[i][1][1]] == this.game[win_map[i][2][0]][win_map[i][2][1]])){
   			this.winner = this.game[win_map[i][0][0]][win_map[i][0][1]];
   			if(this.winner){
   				this.socket.socket_event('data_in_all', this.game_id, {"type": "game_over", 
-  				"winner_text": "User "+this.winner+" won the game."});
+  				"winner_text": "User "+this.winner+" won the game.", "winner": this.winner, "win_map_index": i});
   				return;
   			}
   		}
   	}
   	if(this.cells_clicked == 9){
   		this.socket.socket_event('data_in_all', this.game_id, {"type": "game_over", "winner_text": "It was a Draw!!"});
+  	}
+  }
+
+  add_highlight(win_index) {
+  	var winrow = this.win_map[win_index];
+  	console.log(winrow);
+  	for(var i=0; i<winrow.length; i++) {
+  		console.log('row_'+winrow[i][0]+'_col_'+winrow[i][1]);
+  		$('row_'+winrow[i][0]+'_col_'+winrow[i][1]).css("background-color", "green");
+  	}
+  }
+
+  remove_highlight() {
+  	for(var i=0; i<3; i++) {
+  		for(var j=0; j<3; j++) {
+  			$('row_'+i+'_col_'+j).css("background-color", "white");
+  		}
   	}
   }
 

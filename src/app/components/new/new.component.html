@@ -1,12 +1,24 @@
-Create New Game
-<br>
-<input type="text" name="game_id" placeholder="Enter game name.." [(ngModel)]="new">
-<button (click)="start(new)">Start</button>
+<div class="row">
+	<div class="col-md-4 offset-md-4 col-sm-12 pr-0">
+		<div class="pr-2 m-3">
+				
+			<h1 class="text-center">Tic-Tac-Toe</h1>
+			
+			<hr><br>
+			<div class="row">
+				<div class="btn-group col-12" role="group" aria-label="Basic example">
+					<button type="button" class="btn btn-lg btn-primary" [ngClass]="is_new? 'active': ''" (click)="is_new = true">New</button>
+					<button type="button" class="btn btn-lg btn-primary" [ngClass]="!is_new? 'active': ''" (click)="is_new = false">Join</button>
+				</div>
+			</div>
+			<br><br>
 
-<br>
-<br>
+			<label for="new_game">Enter Room Name</label>
+			<input class="form-control form-control-lg" id="new_game" type="text" name="game_id" placeholder="Enter room name.." [(ngModel)]="game_id">
+			<br>
+			<button class="btn btn-lg btn-primary mt-2 col-12" (click)="start(game_id)">Start</button>
 
-Join Existing Game
-<br>
-<input type="text" name="game_id" placeholder="Enter game name.." [(ngModel)]="join">
-<button (click)="start(join)">Start</button>
+		</div>
+
+	</div>
+</div>

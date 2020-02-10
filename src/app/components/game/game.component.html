@@ -1,27 +1,59 @@
-<h1>Hello user {{user_no}}</h1>
+<div class="row">
+	<div class="col-md-4 offset-md-4 col-sm-12 pr-0">
+		<div class="pr-2 m-3">
+			
 
-<div *ngIf="user_no != 1 && user_no != 2">
-	<h2>2 users already playing.. You can only watch the game.</h2><hr>
-</div>
 
-<div *ngIf="!game_over">
-	<h3 *ngIf="user_one_turn">User 1's turn</h3>
-	<h3 *ngIf="!user_one_turn">User 2's turn</h3>
-	<hr>
-</div>
+			<h1>
+				<button class="btn btn-primary" routerLink="/new">New Game</button>
+			</h1>
+			<h1>
+				Hello User {{user_no}}
+			</h1>
 
-<!-- game here -->
-<table *ngIf="!game_over">
-	<tr *ngFor="let row of game; let i=index;">
-		<td *ngFor="let col of row; let j=index;" style="border: 1px solid black; width: 20px; height: 20px;" (click)="cell_clicked(i,j)">
-			<span *ngIf="col == 0"> </span>
-			<span *ngIf="col == 1">X</span>
-			<span *ngIf="col == 2">O</span>
-		</td>
-	</tr>
-</table>
+			<div *ngIf="total_users == 1">
+				Please wait for another player to join.
+			</div>
+				
+			<div *ngIf="total_users != 1">
 
-<div *ngIf="game_over">
-	<h3>{{winner_text}}</h3>
-	<button *ngIf="user_no < 3" (click)="reset_game()">Restart</button>
+				<div *ngIf="user_no != 1 && user_no != 2">
+					<h5>2 users already playing.. <br>You can only watch the game. <br>If you wish to play, create a new unique room.</h5><hr>
+				</div>
+
+				<div *ngIf="!game_over">
+					<h4 *ngIf="user_one_turn">User 1's turn</h4>
+					<h4 *ngIf="!user_one_turn">User 2's turn</h4>
+					<hr>
+				</div>
+
+				<!-- game here -->
+				<table class="no-border" align="center">
+					<tr *ngFor="let row of game; let i=index;">
+						<td *ngFor="let col of row; let j=index;" class="cell" id="row_{{i}}_col_{{j}}" (click)="cell_clicked(i,j)">
+							<span *ngIf="col == 0"> </span>
+							<span *ngIf="col == 1">
+								<img class="m-1" src="../../../assets/cross.png">
+							</span>
+							<span *ngIf="col == 2">
+								<img class="m-1" src="../../../assets/zero.png">
+							</span>
+						</td>
+					</tr>
+				</table>
+
+				<div *ngIf="game_over">
+					<hr>
+					<h4 class="text-center">{{winner_text}}</h4>
+					<button *ngIf="user_no < 3" class="btn btn-lg btn-primary col-12" (click)="reset_game()">Restart</button>
+				</div>
+
+			</div>
+
+
+
+
+
+		</div>		
+	</div>
 </div>

@@ -8,15 +8,21 @@ import { Router } from '@angular/router';
 })
 export class NewComponent implements OnInit {
 
-	new = '';
-	join = '';
+	game_id = '';
+	is_new = true;
+
   constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
   start(value) {
-  	this.router.navigate(['/game/'+value]);
+  	if(this.is_new){
+  		// check if room exists
+  		this.router.navigate(['/game/'+value]);
+  	} else {
+  		this.router.navigate(['/game/'+value]);
+  	}
   }
 
 }

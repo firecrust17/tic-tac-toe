@@ -1,0 +1,9 @@
+.no-border {
+	border-style: hidden;
+}
+
+.cell {
+	border: 10px solid #f47273; 
+	width: 120px; 
+	height: 120px;
+}
