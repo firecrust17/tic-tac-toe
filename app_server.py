@@ -13,7 +13,7 @@ if __name__ == '__main__':
       'app_server': {
         'dist': '/home/aneeshkumarbhola/tic-tac-toe/dist/tic-tac-toe/',
         'host': '0.0.0.0',
-        'port': '4202'
+        'port': '4201'
       }
     }
   }
