@@ -84,9 +84,9 @@ export class GameComponent implements OnInit, OnDestroy {
       break;
       case 'game_over':
       	// console.log(data.winner_text);
-      	if(this.user_no < 3 && data.winner != this.user_no){
+      	if(this.user_no < 3 && data.winner != this.user_no && data.winner != 0){
       		this.winner_text = 'You Lose :(';
-      	} else if (this.user_no < 3 && data.winner == this.user_no) {
+      	} else if (this.user_no < 3 && data.winner == this.user_no && data.winner != 0) {
       		this.winner_text = 'You Win!! :D';
       	} else {
       		this.winner_text = data.winner_text;
@@ -115,6 +115,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
 	  		if((this.user_no == 1 && this.user_one_turn) || (this.user_no == 2 && !this.user_one_turn)){
 	  			this.socket.socket_event('data_in_all', this.game_id, {"type": "clicked", "row": row, "col": col, "user_no": this.user_no});
+	  			this.game[row][col] = this.user_no;
+	  			// this.check_if_game_over();
 	  		} else {
 	  			console.log("not your turn");
 	  		}
@@ -142,23 +144,26 @@ export class GameComponent implements OnInit, OnDestroy {
   		}
   	}
   	if(this.cells_clicked == 9){
-  		this.socket.socket_event('data_in_all', this.game_id, {"type": "game_over", "winner_text": "It was a Draw!!"});
+  		this.socket.socket_event('data_in_all', this.game_id, {"type": "game_over", 
+  			"winner_text": "It was a Draw!!", "winner": 0, "win_map_index": i});
   	}
   }
 
   add_highlight(win_index) {
   	var winrow = this.win_map[win_index];
-  	console.log(winrow);
-  	for(var i=0; i<winrow.length; i++) {
-  		console.log('row_'+winrow[i][0]+'_col_'+winrow[i][1]);
-  		$('row_'+winrow[i][0]+'_col_'+winrow[i][1]).css("background-color", "green");
+  	// console.log(winrow);
+  	if(winrow !=  undefined){
+	  	for(var i=0; i<winrow.length; i++) {
+	  		console.log('row_'+winrow[i][0]+'_col_'+winrow[i][1]);
+	  		$('#row_'+winrow[i][0]+'_col_'+winrow[i][1]).css("background-color", '#ffd8e7');
+	  	}
   	}
   }
 
   remove_highlight() {
   	for(var i=0; i<3; i++) {
   		for(var j=0; j<3; j++) {
-  			$('row_'+i+'_col_'+j).css("background-color", "white");
+  			$('#row_'+i+'_col_'+j).css("background-color", "white");
   		}
   	}
   }
